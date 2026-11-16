@@ -8,7 +8,7 @@ A data-mining project that cleans a messy dataset of 100,000 retail transactions
 
 - Drop rows without a `Transaction_ID` and remove duplicate IDs (100,000 → 94,040 rows)
 - Fix quantities (negatives to positives, missing values to 1)
-- Convert prices to numbers, fill values that don't parse with the median, and make negatives positive
+- Convert prices to numbers, fill gaps with the median, and make negatives positive
 - Standardise payment methods (`pay pal` → `paypal`) and statuses (`Complete` → `Completed`, missing → `Unknown`)
 - Parse dates, with a fallback for invalid ones
 - Normalise product names (`Tab` → `Tablet`)
@@ -18,16 +18,6 @@ A data-mining project that cleans a messy dataset of 100,000 retail transactions
 - Group products by customer and one-hot encode them
 - Find frequent itemsets with Apriori (`min_support = 0.1`)
 - Keep rules with confidence ≥ 0.3 and report support, confidence and lift
-
-### Known issue
-
-6,640 raw prices are written with a currency sign, like `$420.21`. `pd.to_numeric` can't parse those, so the notebook treats them as missing and fills them with the median price (51.96), the same as the 33,497 prices that really are empty. The real values are lost. To keep them, strip the sign before converting:
-
-```python
-df_clean['Price'] = pd.to_numeric(df_clean['Price'].astype(str).str.replace('$', '', regex=False), errors='coerce')
-```
-
-Prices aren't used for rule mining, so `association_rules.csv` is unaffected.
 
 ## Files
 
